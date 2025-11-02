@@ -121,31 +121,46 @@ def preprocess_image(image_path):
     Returns:
         Preprocessed image array ready for prediction
     """
-    # Load image
-    img = cv2.imread(image_path)
-    
-    # Convert to grayscale
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    
-    # Try to detect face using Haar Cascade (for better cropping)
-    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
-    
-    # If face is detected, crop to face region
-    if len(faces) > 0:
-        (x, y, w, h) = faces[0]  # Use the first detected face
-        gray = gray[y:y+h, x:x+w]
-    
-    # Resize to 48x48 (model input size)
-    img_resized = cv2.resize(gray, (48, 48))
-    
-    # Normalize to [0, 1]
-    img_normalized = img_resized / 255.0
-    
-    # Reshape to (1, 48, 48, 1) for model input
-    img_reshaped = img_normalized.reshape(1, 48, 48, 1)
-    
-    return img_reshaped
+    try:
+        # Load image
+        img = cv2.imread(image_path)
+        if img is None:
+            print(f"⚠️ Could not load image: {image_path}")
+            # Return dummy array if image fails to load
+            return np.zeros((1, 48, 48, 1), dtype=np.float32)
+        
+        # Convert to grayscale
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        
+        # Try to detect face using Haar Cascade (with faster settings)
+        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        faces = face_cascade.detectMultiScale(
+            gray, 
+            scaleFactor=1.3,  # Faster detection
+            minNeighbors=3,   # Less strict
+            minSize=(30, 30),
+            flags=cv2.CASCADE_SCALE_IMAGE
+        )
+        
+        # If face is detected, crop to face region
+        if len(faces) > 0:
+            (x, y, w, h) = faces[0]  # Use the first detected face
+            gray = gray[y:y+h, x:x+w]
+        
+        # Resize to 48x48 (model input size)
+        img_resized = cv2.resize(gray, (48, 48), interpolation=cv2.INTER_AREA)
+        
+        # Normalize to [0, 1]
+        img_normalized = img_resized.astype(np.float32) / 255.0
+        
+        # Reshape to (1, 48, 48, 1) for model input
+        img_reshaped = img_normalized.reshape(1, 48, 48, 1)
+        
+        return img_reshaped
+        
+    except Exception as e:
+        print(f"❌ Error in preprocess_image: {e}")
+        return np.zeros((1, 48, 48, 1), dtype=np.float32)
 
 def predict_emotion(image_path):
     """
