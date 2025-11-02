@@ -107,11 +107,11 @@ def preprocess_image(image_path):
     
     Steps:
     1. Load the image using OpenCV
-    2. Convert BGR to RGB (OpenCV loads as BGR)
+    2. Convert to grayscale (model expects grayscale)
     3. Detect face using Haar Cascade (optional but improves accuracy)
-    4. Resize to 224x224 pixels (EfficientNet input size)
+    4. Resize to 48x48 pixels (model input size)
     5. Normalize pixel values to [0, 1]
-    6. Reshape to match model input shape
+    6. Reshape to match model input shape (1, 48, 48, 1)
     
     Args:
         image_path: Path to the uploaded image
@@ -122,27 +122,26 @@ def preprocess_image(image_path):
     # Load image
     img = cv2.imread(image_path)
     
-    # Convert BGR to RGB
-    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    # Convert to grayscale
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     
     # Try to detect face using Haar Cascade (for better cropping)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
     faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
     
     # If face is detected, crop to face region
     if len(faces) > 0:
         (x, y, w, h) = faces[0]  # Use the first detected face
-        img_rgb = img_rgb[y:y+h, x:x+w]
+        gray = gray[y:y+h, x:x+w]
     
-    # Resize to 224x224 (EfficientNet input size)
-    img_resized = cv2.resize(img_rgb, (224, 224))
+    # Resize to 48x48 (model input size)
+    img_resized = cv2.resize(gray, (48, 48))
     
     # Normalize to [0, 1]
     img_normalized = img_resized / 255.0
     
-    # Reshape to (1, 224, 224, 3) for model input
-    img_reshaped = img_normalized.reshape(1, 224, 224, 3)
+    # Reshape to (1, 48, 48, 1) for model input
+    img_reshaped = img_normalized.reshape(1, 48, 48, 1)
     
     return img_reshaped
 
