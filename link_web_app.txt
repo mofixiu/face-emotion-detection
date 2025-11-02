@@ -1,0 +1,24 @@
+# Deployment Link
+
+This file will contain the live URL of your deployed web application once you host it on Render.
+
+## Deployment Status: Not yet deployed
+
+After deploying to Render, paste your live URL below:
+
+Live URL: [Your Render URL will go here]
+
+Example: https://your-app-name.onrender.com
+
+---
+
+## Quick Deployment Steps (to be done later):
+
+1. Push your code to GitHub
+2. Create a Render account at https://render.com
+3. Create a new Web Service
+4. Connect your GitHub repository
+5. Configure build and start commands
+6. Deploy!
+
+The full deployment guide will be provided in Step 8.
