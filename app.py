@@ -4,9 +4,11 @@ Flask Web Application for Facial Emotion Detection
 This application:
 1. Serves an HTML form where users can input their information and upload a photo
 2. Processes the uploaded image using the trained emotion detection model
-3. Detects the person's emotion from the photo
+3. Detects the person's emotion from the photo (using 48x48 grayscale CNN model)
 4. Saves user information and image to an SQLite database
 5. Returns a personalized message based on the detected emotion
+
+Model: Basic CNN trained on 48x48 grayscale images
 """
 
 import os
