@@ -38,17 +38,20 @@ FACE_DETECTION/
 ### Installation
 
 1. Navigate to the project directory:
+
 ```bash
 cd FACE_DETECTION
 ```
 
 2. Create a virtual environment (recommended):
+
 ```bash
 python3 -m venv venv
 source venv/bin/activate  # On macOS/Linux
 ```
 
 3. Install dependencies:
+
 ```bash
 pip install -r requirements.txt
 ```
@@ -57,20 +60,24 @@ pip install -r requirements.txt
 
 1. Ensure the FER2013 dataset is in the correct location
 2. Run the training script:
+
 ```bash
 python model_training.py
 ```
+
 3. Wait for training to complete (may take 1-3 hours depending on hardware)
 4. The trained model will be saved as `face_emotionModel.h5`
 
 ### Running the Application
 
 1. Start the Flask server:
+
 ```bash
 python app.py
 ```
 
 2. Open your browser and go to:
+
 ```
 http://localhost:5000
 ```
@@ -80,6 +87,7 @@ http://localhost:5000
 ## 🧪 Testing
 
 Test the application with various facial images showing different emotions. The model works best with:
+
 - Clear, front-facing photos
 - Good lighting
 - Single person in the image
