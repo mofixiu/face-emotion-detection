@@ -31,11 +31,17 @@ MODEL_PATH = 'face_emotionModel.h5'
 model = None
 
 try:
+    print(f"Attempting to load model from {MODEL_PATH}...")
     model = load_model(MODEL_PATH)
-    print(f"Model loaded successfully from {MODEL_PATH}")
+    print(f"✅ Model loaded successfully from {MODEL_PATH}")
+    print(f"Model input shape: {model.input_shape}")
+    print(f"Model output shape: {model.output_shape}")
 except Exception as e:
-    print(f"Error loading model: {e}")
-    print("Please train the model first by running model_training.py")
+    print(f"❌ Error loading model: {e}")
+    print(f"Error type: {type(e).__name__}")
+    import traceback
+    traceback.print_exc()
+    print("⚠️ Model not loaded - predictions will return 'unknown'")
 
 # Emotion labels matching the training data
 EMOTION_LABELS = {
@@ -151,24 +157,33 @@ def predict_emotion(image_path):
         Tuple of (emotion_label, confidence_score)
     """
     if model is None:
+        print("❌ Model is None - cannot predict")
         return "unknown", 0.0
     
     try:
+        print(f"Preprocessing image: {image_path}")
         # Preprocess the image
         processed_image = preprocess_image(image_path)
+        print(f"Processed image shape: {processed_image.shape}")
         
         # Make prediction
+        print("Making prediction...")
         predictions = model.predict(processed_image, verbose=0)
+        print(f"Predictions: {predictions[0]}")
         
         # Get the emotion with highest probability
         emotion_index = np.argmax(predictions[0])
         confidence = predictions[0][emotion_index]
         emotion_label = EMOTION_LABELS[emotion_index]
         
+        print(f"✅ Predicted: {emotion_label} (confidence: {confidence:.2%})")
         return emotion_label, float(confidence)
     
     except Exception as e:
-        print(f"Error during prediction: {e}")
+        print(f"❌ Error during prediction: {e}")
+        print(f"Error type: {type(e).__name__}")
+        import traceback
+        traceback.print_exc()
         return "unknown", 0.0
 
 def save_to_database(name, email, age, image_path, emotion):
