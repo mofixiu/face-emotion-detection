@@ -34,7 +34,8 @@ model = None
 
 try:
     print(f"Attempting to load model from {MODEL_PATH}...")
-    model = load_model(MODEL_PATH)
+    # Load with compile=False to avoid version compatibility issues
+    model = load_model(MODEL_PATH, compile=False, safe_mode=False)
     print(f"✅ Model loaded successfully from {MODEL_PATH}")
     print(f"Model input shape: {model.input_shape}")
     print(f"Model output shape: {model.output_shape}")
