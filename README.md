@@ -111,10 +111,6 @@ This application can be deployed to Render or similar platforms. Full deployment
 - First-time training may take significant time
 - Database and uploads folders are created automatically
 
-## 👨‍💻 Author
-
-CSC415 Assignment Project
-Covenant University
 
 ## 📄 License
 
